@@ -856,6 +856,69 @@ function deleteOrder(orderId) {
     }
 }
 
+/**
+ * חישוב מחדש של קרטונים לכל ההזמנות
+ * משתמש בסוגי הקרטונים הנוכחיים
+ */
+async function recalculateAllCartons() {
+    const orders = DataManager.getOrders();
+    const products = DataManager.getProducts();
+    const cartonTypes = DataManager.getCartonTypes();
+
+    // בדיקת קרטונים
+    if (!cartonTypes || cartonTypes.length === 0) {
+        alert('❌ אין סוגי קרטונים מוגדרים!\n\nאנא הגדר סוגי קרטונים לפני חישוב מחדש.');
+        return;
+    }
+
+    // בדיקת הזמנות
+    if (!orders || orders.length === 0) {
+        alert('אין הזמנות לחישוב מחדש.');
+        return;
+    }
+
+    // אישור
+    if (!confirm(`🔄 פעולה זו תחשב מחדש את הקרטונים ל-${orders.length} הזמנות.\n\nסוגי הקרטונים הנוכחיים:\n${cartonTypes.map(t => `• ${t.name} (${t.maxVolume} סמ"ק)`).join('\n')}\n\nהאם להמשיך?`)) {
+        return;
+    }
+
+    let updatedCount = 0;
+    let errorCount = 0;
+
+    for (const order of orders) {
+        try {
+            // בדיקה שיש פריטים בהזמנה
+            if (!order.items || order.items.length === 0) {
+                continue;
+            }
+
+            // חישוב קרטונים מחדש
+            const newCartons = PackingAlgorithm.packOrder(order.items, products, cartonTypes);
+
+            // עדכון ההזמנה
+            order.cartons = newCartons;
+            DataManager.updateOrder(String(order.id), { cartons: newCartons });
+            updatedCount++;
+        } catch (error) {
+            console.error(`שגיאה בעדכון הזמנה ${order.orderNumber}:`, error);
+            errorCount++;
+        }
+    }
+
+    // רענון הטבלאות
+    refreshOrdersManagementTable();
+    refreshOrdersTable();
+
+    // הודעה
+    let message = `✅ חישוב הקרטונים הושלם!\n\n${updatedCount} הזמנות עודכנו.`;
+    if (errorCount > 0) {
+        message += `\n⚠️ ${errorCount} הזמנות נכשלו בעדכון.`;
+    }
+    alert(message);
+}
+
+window.recalculateAllCartons = recalculateAllCartons;
+
 // ---------- מודל/פופאפ ----------
 
 function initModal() {
