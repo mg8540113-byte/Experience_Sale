@@ -4,7 +4,7 @@
    ============================================ */
 
 // הגדרות Supabase
-const SUPABASE_URL = 'https://qpkltxywpmlgvgvoecm.supabase.co';
+const SUPABASE_URL = 'https://qpkittxywpmlgvgvoecm.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_qmxnMPMUCc-y-ChZ-Rrn6w_WEsJ2BNa';
 
 // בדיקה אם מחובר לאינטרנט ו-Supabase זמין
