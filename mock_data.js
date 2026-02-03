@@ -28,7 +28,7 @@ const PassoverGenerator = {
     ],
 
     async generate() {
-        if (!confirm('האם אתה בטוח שברצונך ליצור 400 מוצרי פסח ו-20 ליינים? זה עשוי לקחת בדקה.')) return;
+        if (!confirm('האם אתה בטוח שברצונך ליצור 400 מוצרי פסח ו-20 ליינים? זה עשוי לקחת דקה.')) return;
 
         console.log('מתחיל יצירת נתונים...');
         let skuCounter = 1000;
@@ -98,8 +98,70 @@ const PassoverGenerator = {
         if (typeof refreshProductsTable === 'function') refreshProductsTable();
         if (typeof refreshBeltsTable === 'function') refreshBeltsTable();
         if (typeof refreshVisualMap === 'function') refreshVisualMap();
+    },
+
+    async generateOrders() {
+        if (!confirm('⚠️ פעולה זו תיצור 80 הזמנות עומס (כ-13,000 פריטים).\nהאם להמשיך?')) return;
+
+        const products = DataManager.getProducts();
+        if (!products || products.length === 0) {
+            alert('❌ אין מוצרים במערכת! אנא צור מוצרים (למשל בעזרת "פרטי פסח") לפני יצירת הזמנות.');
+            return;
+        }
+
+        console.log('מתחיל יצירת הזמנות עומס...');
+        const startTime = Date.now();
+        let createdOrders = 0;
+
+        try {
+            document.body.style.cursor = 'wait';
+
+            for (let i = 1; i <= 80; i++) {
+                const items = [];
+                // בחירת 170 פריטים אקראיים (עם משקלים/כמויות)
+                for (let j = 0; j < 170; j++) {
+                    const randomProduct = products[Math.floor(Math.random() * products.length)];
+
+                    const existingItem = items.find(item => item.sku === randomProduct.sku);
+                    if (existingItem) {
+                        existingItem.quantity++;
+                    } else {
+                        items.push({ sku: randomProduct.sku, quantity: 1 });
+                    }
+                }
+
+                const order = {
+                    orderNumber: 90000 + i, // ספרור מיוחד להזמנות עומס
+                    customerName: `לקוח עומס ${i}`,
+                    address: `רחוב הבדיקות ${Math.floor(Math.random() * 100)}, עיר המחסנים`,
+                    deliveryLine: `קו ${Math.floor(Math.random() * 10) + 1}`,
+                    items: items,
+                    status: 'חדשה',
+                    createdAt: new Date().toISOString()
+                };
+
+                // שימוש ישיר ב-DataManager ליעילות
+                await DataManager.addOrder(order);
+                createdOrders++;
+
+                // עדכון לוג כל 10 הזמנות
+                if (i % 10 === 0) console.log(`נוצרו ${i} הזמנות...`);
+            }
+
+            const duration = ((Date.now() - startTime) / 1000).toFixed(1);
+            alert(`✅ הסתיים בהצלחה!\nנוצרו ${createdOrders} הזמנות עומס ב-${duration} שניות.\nעבור למסך "ניהול הזמנות" לצפייה.`);
+
+            if (typeof loadOrders === 'function') loadOrders();
+
+        } catch (error) {
+            console.error('Error generating mock orders:', error);
+            alert('שגיאה ביצירת הזמנות: ' + error.message);
+        } finally {
+            document.body.style.cursor = 'default';
+        }
     }
 };
 
-// הפיכת הפונקציה לזמינה גלובלית
+// הפיכת הפונקציות לזמינות גלובלית
 window.generatePassoverData = () => PassoverGenerator.generate();
+window.generateMockOrders = () => PassoverGenerator.generateOrders();
