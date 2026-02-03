@@ -983,3 +983,232 @@ function viewBeltProducts(beltNumber) {
 
 window.viewBeltProducts = viewBeltProducts;
 
+// ---------- ייבוא Excel ----------
+
+function initExcelImport() {
+    const importBtn = document.getElementById('importExcelBtn');
+    const fileInput = document.getElementById('excelFileInput');
+
+    if (importBtn && fileInput) {
+        importBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleExcelFile);
+    }
+}
+
+function handleExcelFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+
+            // קח את הגיליון הראשון
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+
+            // המר לאובייקטים
+            const rows = XLSX.utils.sheet_to_json(sheet);
+
+            if (rows.length === 0) {
+                alert('הקובץ ריק או לא בפורמט תקין');
+                return;
+            }
+
+            // הצג תצוגה מקדימה
+            showExcelPreview(rows, file.name);
+
+        } catch (error) {
+            console.error('Error reading Excel:', error);
+            alert('שגיאה בקריאת הקובץ: ' + error.message);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+    event.target.value = ''; // איפוס
+}
+
+function showExcelPreview(rows, fileName) {
+    // זהה עמודות
+    const columns = Object.keys(rows[0]);
+
+    const content = `
+        <div style="margin-bottom: 1rem;">
+            <strong>קובץ:</strong> ${escapeHtml(fileName)}<br>
+            <strong>שורות:</strong> ${rows.length}
+        </div>
+        
+        <div style="margin-bottom: 1rem; padding: 1rem; background: #fff3cd; border-radius: 8px; text-align: right;">
+            <strong>📌 התאמת עמודות:</strong><br>
+            בחר איזו עמודה מתאימה לכל שדה
+        </div>
+        
+        <div class="excel-mapping" style="display: grid; gap: 0.75rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <label style="width: 100px;">מס' הזמנה:</label>
+                <select id="mapOrderNumber" class="form-input" style="flex: 1;">
+                    <option value="">-- בחר עמודה --</option>
+                    ${columns.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')}
+                </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <label style="width: 100px;">שם לקוח:</label>
+                <select id="mapCustomerName" class="form-input" style="flex: 1;">
+                    <option value="">-- בחר עמודה --</option>
+                    ${columns.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')}
+                </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <label style="width: 100px;">כתובת:</label>
+                <select id="mapAddress" class="form-input" style="flex: 1;">
+                    <option value="">-- לא חובה --</option>
+                    ${columns.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')}
+                </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <label style="width: 100px;">מק"ט:</label>
+                <select id="mapSku" class="form-input" style="flex: 1;">
+                    <option value="">-- בחר עמודה --</option>
+                    ${columns.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')}
+                </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <label style="width: 100px;">כמות:</label>
+                <select id="mapQuantity" class="form-input" style="flex: 1;">
+                    <option value="">-- לא חובה (ברירת מחדל: 1) --</option>
+                    ${columns.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')}
+                </select>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 1rem;">
+            <strong>תצוגה מקדימה (5 שורות ראשונות):</strong>
+        </div>
+        <div style="overflow-x: auto; max-height: 200px;">
+            <table class="data-table" style="font-size: 0.75rem;">
+                <thead>
+                    <tr>${columns.map(c => `<th>${escapeHtml(c)}</th>`).join('')}</tr>
+                </thead>
+                <tbody>
+                    ${rows.slice(0, 5).map(row => `
+                        <tr>${columns.map(c => `<td>${escapeHtml(String(row[c] || ''))}</td>`).join('')}</tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center;">
+            <button class="btn btn-primary" onclick="importExcelOrders()">
+                ייבא ${rows.length} הזמנות
+            </button>
+            <button class="btn btn-secondary" onclick="closeModal()">ביטול</button>
+        </div>
+    `;
+
+    // שמור את הנתונים בזיכרון
+    window._excelRows = rows;
+
+    openModal('ייבוא הזמנות מ-Excel', content);
+
+    // נסה לזהות עמודות אוטומטית
+    autoDetectColumns(columns);
+}
+
+function autoDetectColumns(columns) {
+    const patterns = {
+        orderNumber: ['order', 'הזמנה', 'מספר', 'number', 'id', 'order_number', 'order_id'],
+        customerName: ['customer', 'לקוח', 'שם', 'name', 'customer_name', 'client'],
+        address: ['address', 'כתובת', 'shipping', 'delivery'],
+        sku: ['sku', 'מקט', 'מק"ט', 'product', 'item', 'code', 'barcode', 'קוד'],
+        quantity: ['quantity', 'כמות', 'qty', 'amount', 'count']
+    };
+
+    for (const [field, keywords] of Object.entries(patterns)) {
+        const select = document.getElementById('map' + field.charAt(0).toUpperCase() + field.slice(1));
+        if (!select) continue;
+
+        for (const col of columns) {
+            const colLower = col.toLowerCase();
+            if (keywords.some(k => colLower.includes(k))) {
+                select.value = col;
+                break;
+            }
+        }
+    }
+}
+
+function importExcelOrders() {
+    const rows = window._excelRows;
+    if (!rows) return;
+
+    const mapping = {
+        orderNumber: document.getElementById('mapOrderNumber')?.value,
+        customerName: document.getElementById('mapCustomerName')?.value,
+        address: document.getElementById('mapAddress')?.value,
+        sku: document.getElementById('mapSku')?.value,
+        quantity: document.getElementById('mapQuantity')?.value
+    };
+
+    if (!mapping.orderNumber || !mapping.customerName || !mapping.sku) {
+        alert('חובה לבחור עמודות: מספר הזמנה, שם לקוח, ומק"ט');
+        return;
+    }
+
+    // קבץ לפי מספר הזמנה
+    const ordersMap = new Map();
+
+    for (const row of rows) {
+        const orderKey = String(row[mapping.orderNumber] || '');
+        if (!orderKey) continue;
+
+        if (!ordersMap.has(orderKey)) {
+            ordersMap.set(orderKey, {
+                customerName: String(row[mapping.customerName] || ''),
+                address: String(row[mapping.address] || ''),
+                items: []
+            });
+        }
+
+        const sku = String(row[mapping.sku] || '');
+        const quantity = parseInt(row[mapping.quantity]) || 1;
+
+        if (sku) {
+            ordersMap.get(orderKey).items.push({ sku, quantity });
+        }
+    }
+
+    // צור הזמנות
+    let created = 0;
+    let skipped = 0;
+
+    for (const [orderKey, orderData] of ordersMap) {
+        if (orderData.items.length === 0) {
+            skipped++;
+            continue;
+        }
+
+        DataManager.addOrder({
+            customerName: orderData.customerName,
+            address: orderData.address,
+            deliveryLine: '',
+            items: orderData.items,
+            cartons: []
+        });
+        created++;
+    }
+
+    closeModal();
+    refreshOrdersTable();
+
+    alert(`✅ יובאו ${created} הזמנות בהצלחה!${skipped > 0 ? `\n⚠️ ${skipped} הזמנות ללא פריטים נדלגו` : ''}`);
+
+    delete window._excelRows;
+}
+
+window.importExcelOrders = importExcelOrders;
+
+// הוסף אתחול ייבוא Excel
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initExcelImport, 100);
+});
