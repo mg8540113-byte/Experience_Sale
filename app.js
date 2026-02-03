@@ -200,6 +200,14 @@ function refreshOrdersTable() {
     tbody.innerHTML = orders.map(order => {
         const itemsCount = order.items ? order.items.reduce((sum, i) => sum + i.quantity, 0) : 0;
         const cartonsCount = order.cartons ? order.cartons.length : 0;
+        const currentStatus = order.status || 'received';
+
+        // פורמט תאריך ושעה להדפסה
+        const printedAt = order.labelsPrintedAt ?
+            new Date(order.labelsPrintedAt).toLocaleString('he-IL', {
+                day: '2-digit', month: '2-digit', year: '2-digit',
+                hour: '2-digit', minute: '2-digit'
+            }) : '';
 
         return `
             <tr data-id="${order.id}">
@@ -210,14 +218,55 @@ function refreshOrdersTable() {
                 <td>${itemsCount} פריטים</td>
                 <td>${cartonsCount} קרטונים</td>
                 <td>
-                    <button class="btn btn-primary btn-small" onclick="viewOrder('${order.id}')">
-                        הצג/הדפס
-                    </button>
+                    <select class="status-dropdown status-${currentStatus}" onchange="updateOrderStatus('${order.id}', this.value)">
+                        <option value="received" ${currentStatus === 'received' ? 'selected' : ''}>📥 נקלט במערכת</option>
+                        <option value="printed" ${currentStatus === 'printed' ? 'selected' : ''}>🖨️ הודפסו מדבקות${printedAt ? ' (' + printedAt + ')' : ''}</option>
+                        <option value="packed" ${currentStatus === 'packed' ? 'selected' : ''}>✅ נארזה בהצלחה</option>
+                    </select>
+                </td>
+                <td class="actions-cell">
+                    <div class="action-buttons">
+                        <button class="action-btn action-view" onclick="viewOrder('${order.id}')" title="הצג/הדפס">
+                            👁️
+                        </button>
+                        <button class="action-btn action-delete" onclick="deleteOrderPrompt('${order.id}')" title="מחק">
+                            🗑️
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
     }).join('');
 }
+
+/**
+ * עדכון סטטוס הזמנה
+ */
+function updateOrderStatus(orderId, newStatus) {
+    const updates = { status: newStatus };
+
+    // אם הסטטוס הוא "הודפסו מדבקות", שמור גם את התאריך והשעה
+    if (newStatus === 'printed') {
+        updates.labelsPrintedAt = new Date().toISOString();
+    }
+
+    DataManager.updateOrder(orderId, updates);
+    refreshOrdersTable();
+}
+
+window.updateOrderStatus = updateOrderStatus;
+
+/**
+ * מחיקת הזמנה עם אישור
+ */
+function deleteOrderPrompt(orderId) {
+    if (confirm('האם אתה בטוח שברצונך למחוק הזמנה זו?')) {
+        DataManager.deleteOrder(orderId);
+        refreshOrdersTable();
+    }
+}
+
+window.deleteOrderPrompt = deleteOrderPrompt;
 
 // ---------- טופס הזמנה ----------
 
