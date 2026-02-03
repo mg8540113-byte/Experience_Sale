@@ -111,6 +111,24 @@ const DataManager = {
             .sort((a, b) => (a.position || 0) - (b.position || 0));
     },
 
+    searchProducts(query, beltFilter) {
+        let products = this.getProducts();
+
+        if (beltFilter) {
+            products = products.filter(p => p.belt === beltFilter);
+        }
+
+        if (query) {
+            const lowerQuery = query.toLowerCase();
+            products = products.filter(p =>
+                (p.sku && p.sku.toLowerCase().includes(lowerQuery)) ||
+                (p.name && p.name.toLowerCase().includes(lowerQuery))
+            );
+        }
+
+        return products;
+    },
+
     // סנכרון מוצר ל-Supabase
     async syncProduct(product, action) {
         if (!useSupabase) return;
@@ -276,6 +294,14 @@ const DataManager = {
     getOrders() {
         if (cache.orders !== null) return cache.orders;
         return getLocalData(this.KEYS.ORDERS) || [];
+    },
+
+    getOrderById(id) {
+        return this.getOrders().find(o => o.id === id);
+    },
+
+    getProductById(id) {
+        return this.getProducts().find(p => p.id === id);
     },
 
     getNextOrderNumber() {

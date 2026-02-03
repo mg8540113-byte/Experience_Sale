@@ -43,6 +43,7 @@ function showApp() {
     initOrdersManagement();
     initBeltsManagement();
     initModal();
+    initExcelImport();
 
     // טעינת מסך ראשי
     showScreen('orders-dashboard');
@@ -1207,8 +1208,3 @@ function importExcelOrders() {
 }
 
 window.importExcelOrders = importExcelOrders;
-
-// הוסף אתחול ייבוא Excel
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(initExcelImport, 100);
-});
