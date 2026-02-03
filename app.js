@@ -461,13 +461,6 @@ function initManagementHub() {
             }
         });
     });
-
-    // כפתור מחיקת נתונים
-    const deleteBtn = document.getElementById('deleteAllDataBtn');
-    if (deleteBtn) {
-        // מסיר מאזינים קודמים אם נוצרו ע"י ה-querySelectorAll למעלה (למרות שאין לו dataset.panel אז זה לא יפריע)
-        deleteBtn.onclick = confirmDeleteAllData;
-    }
 }
 
 // ---------- ניהול מוצרים ----------
@@ -1247,3 +1240,14 @@ async function confirmDeleteAllData() {
 }
 
 window.confirmDeleteAllData = confirmDeleteAllData;
+
+// מנגנון אבטחה: האזנה גלובלית לכפתור המחיקה (למקרה שהאתחול הרגיל נכשל)
+document.addEventListener('click', (e) => {
+    // בדוק אם הלחיצה הייתה על כפתור המחיקה או אחד הילדים שלו
+    const btn = e.target.closest('#deleteAllDataBtn');
+    if (btn) {
+        // מנע התנהגות כפולה אם כבר קיים מאזין
+        e.stopImmediatePropagation();
+        confirmDeleteAllData();
+    }
+});
