@@ -492,12 +492,19 @@ function refreshProductsTable() {
 
     const products = DataManager.searchProducts(searchQuery, beltValue ? parseInt(beltValue) : null);
 
-    tbody.innerHTML = products.map(product => `
+    const belts = DataManager.getBelts();
+
+    tbody.innerHTML = products.map(product => {
+        const beltObj = belts.find(b => b.number === product.belt);
+        // הצג את שם הליין אם קיים, אחרת הצג "סרט X"
+        const beltDisplay = beltObj ? beltObj.name : (product.belt ? `סרט ${product.belt}` : '-');
+
+        return `
         <tr data-id="${product.id}">
             <td><strong>${escapeHtml(product.sku)}</strong></td>
             <td>${escapeHtml(product.name)}</td>
             <td>${product.volume || '-'}</td>
-            <td>סרט ${product.belt || '-'}</td>
+            <td>${escapeHtml(beltDisplay)}</td>
             <td>מיקום ${product.position || '-'}</td>
             <td>
                 <button class="btn btn-secondary btn-small" onclick="openProductModal('${product.id}')">
@@ -505,7 +512,8 @@ function refreshProductsTable() {
                 </button>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 
     // עדכון סינון סרטים
     refreshBeltFilter();

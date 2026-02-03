@@ -57,6 +57,12 @@ const PassoverGenerator = {
                 await DataManager.updateBelt(belt.id, { name: category.name });
             }
 
+            // ניקוי מוצרים קיימים בליין זה למניעת כפילויות במיקומים
+            const existingProductsInBelt = DataManager.getProductsByBelt(beltNumber);
+            for (const p of existingProductsInBelt) {
+                await DataManager.deleteProduct(p.id);
+            }
+
             // יצירת מוצרים לליין
             for (let j = 0; j < 20; j++) { // 20 מוצרים לליין
                 if (j >= category.items.length) break; // הגנה מחריגה

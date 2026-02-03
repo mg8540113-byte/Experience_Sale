@@ -245,10 +245,13 @@ const DataManager = {
         const types = this.getCartonTypes();
         const index = types.findIndex(t => t.id === id);
         if (index === -1) return null;
+
+        const oldName = types[index].name;
         types[index] = { ...types[index], ...updates };
+
         cache.cartonTypes = types;
         setLocalData(this.KEYS.CARTON_TYPES, types);
-        this.syncCartonType(types[index], 'update');
+        this.syncCartonType(types[index], 'update', oldName);
         return types[index];
     },
 
@@ -262,7 +265,7 @@ const DataManager = {
         return true;
     },
 
-    async syncCartonType(type, action) {
+    async syncCartonType(type, action, originalName = null) {
         if (!useSupabase) return;
         try {
             if (action === 'add') {
@@ -272,20 +275,21 @@ const DataManager = {
                     max_weight: type.maxWeight
                 });
             } else if (action === 'update') {
+                const targetName = originalName || type.name;
                 await supabaseClient.from('carton_types')
                     .update({
                         name: type.name,
                         max_volume: type.maxVolume,
                         max_weight: type.maxWeight
                     })
-                    .eq('name', type.name);
+                    .eq('name', targetName);
             } else if (action === 'delete') {
                 await supabaseClient.from('carton_types')
                     .delete()
                     .eq('name', type.name);
             }
         } catch (e) {
-            console.error('CartonType sync error:', e);
+            console.error('Supabase sync carton type error:', e);
         }
     },
 
