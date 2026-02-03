@@ -347,7 +347,7 @@ function showResultsScreen(order) {
     `;
 
     // הגדרת מספר פריטים מקסימלי לעמוד הדפסה
-    const MAX_ITEMS_PER_PAGE = 15;
+    const MAX_ITEMS_PER_PAGE = 11;
 
     // כרטיסי קרטון
     gridEl.innerHTML = order.cartons.map(carton => {

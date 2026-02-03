@@ -1,4 +1,4 @@
-/* ============================================
+п»ї/* ============================================
    WMS ЧњЧ™Ч§Ч•Ч Ч—Ч›Чќ - ЧўЧ™Ч¦Ч•Ч‘ Ч”ЧћЧўЧЁЧ›ЧЄ
    ============================================ */
 
@@ -905,17 +905,17 @@ body {
 }
 
 
-/* ---------- двгшеъ дгфсд v2 (тйцеб рчй еооешлж. оеъан мбчщъ дощъощ) ---------- */
+/* ---------- пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ v2 (пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ) ---------- */
 @media print {
-    /* ----- 1. дсъшъ аморийн ма шцеййн ----- */
-    .top-nav, .login-screen, .filters-bar, .screen-header button, 
+    /* ----- 1. пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ ----- */
+    @page { margin: 0; size: auto; } .screen-header, .results-summary, .top-nav, .login-screen, .filters-bar, .screen-header button, 
     .screen-header input, .screen-header .btn, .header-actions, 
     #backToOrdersBtn, .results-summary .btn, .new-order-btn, 
     .btn, .hub-tiles {
         display: none !important;
     }
 
-    /* ----- 2. айфес бсйсй мгу ----- */
+    /* ----- 2. пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ ----- */
     body {
         background: white;
         color: #111;
@@ -931,9 +931,9 @@ body {
         margin: 0;
     }
 
-    /* ----- 3. обрд дчшиеп ----- */
+    /* ----- 3. пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ ----- */
     .cartons-grid {
-        display: block !important; /* бйием двшйг */
+        display: block !important; /* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
     }
 
     .carton-card {
@@ -942,8 +942,8 @@ body {
         page-break-inside: avoid;
         break-inside: avoid;
         
-        border: none; /* бйием освшъ зйцерйъ */
-        border-top: 1px dotted #ccc; /* дфшгд тгйрд бйп гфйн ан шеайн */
+        border: none; /* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
+        border-top: 1px dotted #ccc; /* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
         margin: 0;
         padding: 5mm 10mm;
         width: 100%;
@@ -955,7 +955,7 @@ body {
         break-after: auto;
     }
 
-    /* ----- 4. леъшъ оегшрйъ (Carton Header Clean) ----- */
+    /* ----- 4. пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (Carton Header Clean) ----- */
     .carton-header-clean {
         display: flex !important;
         flex-direction: column;
@@ -965,7 +965,7 @@ body {
         padding-bottom: 1rem;
     }
 
-    /* щешд тмйерд: оиа-гаид */
+    /* пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅ-пїЅпїЅпїЅпїЅ */
     .header-meta-row {
         display: flex;
         justify-content: space-between;
@@ -983,7 +983,7 @@ body {
     
     .meta-right .print-timestamp { font-size: 9pt; color: #999; }
 
-    /* ажеш вйбеш ошлжй - осфш джорд */
+    /* пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
     .header-center-hero {
         text-align: center;
         padding: 10px 0;
@@ -998,13 +998,13 @@ body {
     }
 
     .header-center-hero .hero-value {
-        font-size: 48pt; /* вегм трч мосфш джорд */
+        font-size: 48pt; /* пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
         font-weight: 900;
         line-height: 0.9;
         color: #000;
     }
 
-    /* бш ойгт ъзъеп - вшйг фшийн */
+    /* пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
     .header-info-bar {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -1033,7 +1033,7 @@ body {
     }
     .info-block .of-total { font-size: 10pt; font-weight: 400; color: #777; }
 
-    /* ----- 5. ибмд рчййд (Clean Table) ----- */
+    /* ----- 5. пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ (Clean Table) ----- */
     .carton-items {
         max-height: none !important;
         overflow: visible !important;
@@ -1061,14 +1061,14 @@ body {
         font-size: 11pt;
     }
 
-    /* дъаоъ тоегеъ */
+    /* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
     .col-check { width: 40px; text-align: center; }
     .col-sku { width: 15%; font-family: Consolas, monospace; font-weight: 600; color: #333; }
     .col-name { width: 45%; font-weight: 500; }
     .col-qty { width: 10%; text-align: center; font-weight: 800; font-size: 13pt; }
     .col-loc { width: 25%; text-align: left; direction: ltr; font-family: monospace; color: #555; }
 
-    /* шйбет сйоеп рчй */
+    /* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ */
     .square-check {
         width: 16px;
         height: 16px;
@@ -1076,7 +1076,7 @@ body {
         margin: 0 auto;
     }
     
-    /* феиш */
+    /* пїЅпїЅпїЅпїЅ */
     .print-footer {
         margin-top: 3rem;
         text-align: center;
@@ -1086,7 +1086,7 @@ body {
         padding-top: 5px;
     }
 
-    /* дсъшъ гбшйн йщрйн */
+    /* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
     .carton-header, .carton-header-modern, 
     .utilization-wrapper, .no-print {
         display: none !important;
@@ -1095,7 +1095,7 @@ body {
     .carton-body { padding: 0; }
 }
 
-/* ---------- свререъ ъеолйн мъцевд боск (Screen) ---------- */
+/* ---------- пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ (Screen) ---------- */
 .carton-header-clean {
     padding: 1.5rem;
     background: white;
@@ -1133,7 +1133,7 @@ body {
 .block-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; }
 .block-value { font-weight: 600; color: #0f172a; font-size: 1.125rem; }
 
-/* ибмд рчййд боск */
+/* пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ */
 .clean-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
 .clean-table th { text-align: right; padding: 0.75rem; color: #64748b; font-size: 0.875rem; font-weight: 600; border-bottom: 1px solid #e2e8f0; }
 .clean-table td { padding: 0.75rem; border-bottom: 1px solid #f1f5f9; font-size: 0.9375rem; }
@@ -1141,19 +1141,19 @@ body {
 .col-qty { font-weight: 600; }
 
 
-/* ---------- дфшгъ ъцевеъ (Screen vs Print) ---------- */
+/* ---------- пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (Screen vs Print) ---------- */
 
-/* бшйшъ озгм (оск): дсъшъ ъцевъ дгфсд */
+/* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ (пїЅпїЅпїЅ): пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
 .print-only {
     display: none !important;
 }
 
-/* дцвъ аморийн щм оск лшвйм */
+/* пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
 .screen-only {
-    display: block; /* ае flex/grid мфй дцешк, абм block биез мдъзмд */
+    display: block; /* пїЅпїЅ flex/grid пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ block пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
 }
 
-/* бдгфсд: дйфек йецшеъ */
+/* пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
 @media print {
     .print-only {
         display: block !important;
@@ -1163,14 +1163,14 @@ body {
         display: none !important;
     }
     
-    /* ейгеа щдвшйг тебг тм дамори дрлеп */
+    /* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
     .cartons-grid {
         display: block !important;
     }
     
-    /* щзжеш ъцевъ леъшъ чмасйъ бойгд ершцд змч оорд, абм лап арзре осъйшйн длм */
+    /* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ */
     .carton-header {
-        display: block !important; /* лзмч о screen-only деа йесъш, жд бсгш */
+        display: block !important; /* пїЅпїЅпїЅпїЅ пїЅ screen-only пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅ */
     }
 }
 
@@ -1201,3 +1201,4 @@ body {
         break-before: page;
     }
 }
+
