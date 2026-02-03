@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMS ליקוט חכם</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- ========== מסך כניסה ========== -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-logo">📦</div>
+            <h1 class="login-title">WMS ליקוט חכם</h1>
+            <p class="login-subtitle">הזן סיסמה להתחברות</p>
+            <form id="loginForm">
+                <div class="login-input-group">
+                    <input type="password" id="passwordInput" placeholder="סיסמה" required autocomplete="off">
+                </div>
+                <button type="submit" class="btn btn-primary btn-large login-btn">
+                    🔓 כניסה
+                </button>
+                <p class="login-error hidden" id="loginError">סיסמה שגויה</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== אפליקציה ראשית ========== -->
+    <div class="app-container hidden" id="appContainer">
+        <!-- ========== תפריט עליון ========== -->
+        <header class="top-nav">
+            <a href="#" class="logo" onclick="location.reload()">
+                <span class="logo-icon">📦</span>
+                <span class="logo-text">WMS ליקוט חכם</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#" class="nav-link active" data-screen="orders-dashboard">לוח הזמנות</a>
+                <a href="#" class="nav-link" data-screen="management-hub">ניהול</a>
+                <button class="btn btn-print" id="printCartonsBtn" style="display: none;">
+                    🖨️ הדפס קרטונים
+                </button>
+                <button class="btn btn-secondary btn-small" id="logoutBtn">
+                    🚪 יציאה
+                </button>
+            </nav>
+        </header>
+
+        <!-- ========== מסך ראשי - לוח הזמנות ========== -->
+        <main class="screen" id="orders-dashboard">
+            <div class="screen-header">
+                <h1>לוח הזמנות</h1>
+                <button class="btn btn-primary" id="newOrderBtn">
+                    <span>+</span> הזמנה חדשה
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>מס' הזמנה</th>
+                            <th>לקוח</th>
+                            <th>כתובת</th>
+                            <th>קו חלוקה</th>
+                            <th>פריטים</th>
+                            <th>קרטונים</th>
+                            <th>פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- הזמנות יוזנו דינמית -->
+                    </tbody>
+                </table>
+                <div class="empty-state" id="ordersEmptyState">
+                    <div class="empty-icon">📋</div>
+                    <p>אין הזמנות עדיין</p>
+                    <p class="empty-hint">לחץ על "הזמנה חדשה" כדי להתחיל</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- ========== טופס יצירת/עריכת הזמנה ========== -->
+        <main class="screen hidden" id="order-form">
+            <div class="screen-header">
+                <h1 id="orderFormTitle">יצירת הזמנה חדשה</h1>
+                <button class="btn btn-secondary" id="cancelOrderBtn">ביטול וחזרה</button>
+            </div>
+
+            <form class="order-form" id="orderFormElement">
+                <input type="hidden" id="editingOrderId">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customerName">שם לקוח *</label>
+                        <input type="text" id="customerName" required placeholder="הכנס שם לקוח">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deliveryAddress">כתובת למשלוח</label>
+                        <input type="text" id="deliveryAddress" placeholder="כתובת (אופציונלי)">
+                    </div>
+                    <div class="form-group">
+                        <label for="deliveryLine">קו חלוקה</label>
+                        <input type="text" id="deliveryLine" placeholder="ליין משלוחים (אופציונלי)">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="productsList">רשימת מוצרים *</label>
+                    <textarea id="productsList" rows="8" required
+                        placeholder="הדבק רשימת מוצרים בפורמט:&#10;מק״ט, כמות&#10;מק״ט, כמות&#10;..."></textarea>
+                    <small class="form-hint">פורמט: מק"ט, כמות (כל מוצר בשורה נפרדת)</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success btn-large">
+                        💾 שמור והפק קרטונים
+                    </button>
+                </div>
+            </form>
+        </main>
+
+        <!-- ========== מסך תוצאות - כרטיסי קרטון ========== -->
+        <main class="screen hidden" id="results-view">
+            <div class="screen-header">
+                <button class="btn btn-secondary" id="backToOrdersBtn">← חזרה ללוח ההזמנות</button>
+                <h1 id="resultsTitle">תוצאות הזמנה</h1>
+            </div>
+
+            <div class="results-summary" id="resultsSummary">
+                <!-- סיכום קרטונים -->
+            </div>
+
+            <div class="cartons-grid" id="cartonsGrid">
+                <!-- כרטיסי קרטון -->
+            </div>
+        </main>
+
+        <!-- ========== מרכז הניהול ========== -->
+        <main class="screen hidden" id="management-hub">
+            <div class="screen-header">
+                <h1>מרכז ניהול</h1>
+            </div>
+
+            <div class="hub-tiles">
+                <div class="hub-tile" data-panel="products-management">
+                    <div class="tile-icon">📦</div>
+                    <h3>ניהול מוצרים</h3>
+                    <p>הוספה, עריכה ומחיקה של מוצרים</p>
+                </div>
+
+                <div class="hub-tile" data-panel="carton-types">
+                    <div class="tile-icon">📐</div>
+                    <h3>סוגי קרטונים</h3>
+                    <p>הגדרת גדלים ונפחים</p>
+                </div>
+
+                <div class="hub-tile" data-panel="visual-map">
+                    <div class="tile-icon">🗺️</div>
+                    <h3>מפה ויזואלית</h3>
+                    <p>תצוגת המחסן והסרטים</p>
+                </div>
+
+                <div class="hub-tile" data-panel="orders-management">
+                    <div class="tile-icon">📝</div>
+                    <h3>ניהול הזמנות</h3>
+                    <p>עריכה ומחיקה של הזמנות</p>
+                </div>
+
+                <div class="hub-tile" data-panel="belts-management">
+                    <div class="tile-icon">🛤️</div>
+                    <h3>ניהול ליינים</h3>
+                    <p>הוספה, עריכה ומחיקה של ליינים</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- ========== פאנל ניהול מוצרים ========== -->
+        <main class="screen hidden" id="products-management">
+            <div class="screen-header">
+                <button class="btn btn-secondary" onclick="showScreen('management-hub')">← חזרה לניהול</button>
+                <h1>ניהול מוצרים</h1>
+                <button class="btn btn-primary" id="addProductBtn">+ הוסף מוצר</button>
+            </div>
+
+            <div class="filters-bar">
+                <input type="text" id="productSearch" placeholder="🔍 חיפוש לפי שם או מק״ט...">
+                <select id="beltFilter">
+                    <option value="">כל הסרטים</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>מק"ט</th>
+                            <th>שם מוצר</th>
+                            <th>נפח (סמ"ק)</th>
+                            <th>סרט</th>
+                            <th>מיקום</th>
+                            <th>פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- ========== פאנל סוגי קרטונים ========== -->
+        <main class="screen hidden" id="carton-types">
+            <div class="screen-header">
+                <button class="btn btn-secondary" onclick="showScreen('management-hub')">← חזרה לניהול</button>
+                <h1>סוגי קרטונים</h1>
+                <button class="btn btn-primary" id="addCartonTypeBtn">+ הוסף סוג קרטון</button>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="cartonTypesTable">
+                    <thead>
+                        <tr>
+                            <th>שם</th>
+                            <th>נפח מקסימלי (סמ"ק)</th>
+                            <th>משקל מקסימלי (ק"ג)</th>
+                            <th>פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartonTypesTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- ========== מפה ויזואלית ========== -->
+        <main class="screen hidden" id="visual-map">
+            <div class="screen-header">
+                <button class="btn btn-secondary" onclick="showScreen('management-hub')">← חזרה לניהול</button>
+                <h1>מפה ויזואלית - מבנה המחסן</h1>
+            </div>
+
+            <div class="warehouse-map" id="warehouseMap">
+                <!-- טורי הליינים יווצרו דינמית -->
+            </div>
+        </main>
+
+        <!-- ========== פאנל ניהול הזמנות ========== -->
+        <main class="screen hidden" id="orders-management">
+            <div class="screen-header">
+                <button class="btn btn-secondary" onclick="showScreen('management-hub')">← חזרה לניהול</button>
+                <h1>ניהול הזמנות</h1>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="ordersManagementTable">
+                    <thead>
+                        <tr>
+                            <th>מס' הזמנה</th>
+                            <th>לקוח</th>
+                            <th>תאריך</th>
+                            <th>סטטוס</th>
+                            <th>פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersManagementTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- ========== פאנל ניהול ליינים ========== -->
+        <main class="screen hidden" id="belts-management">
+            <div class="screen-header">
+                <button class="btn btn-secondary" onclick="showScreen('management-hub')">← חזרה לניהול</button>
+                <h1>ניהול ליינים</h1>
+                <button class="btn btn-primary" id="addBeltBtn">+ הוסף ליין</button>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="beltsTable">
+                    <thead>
+                        <tr>
+                            <th>מספר ליין</th>
+                            <th>שם</th>
+                            <th>מוצרים</th>
+                            <th>פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody id="beltsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- ========== מודל/פופאפ כללי ========== -->
+        <div class="modal-overlay hidden" id="modalOverlay">
+            <div class="modal" id="modal">
+                <div class="modal-header">
+                    <h2 id="modalTitle">כותרת</h2>
+                    <button class="modal-close" id="modalClose">&times;</button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- תוכן דינמי -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- סגירת app-container -->
+
+    <!-- קבצי JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="packing-algorithm.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
