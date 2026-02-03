@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WMS ליקוט חכם</title>
-    <link rel="stylesheet" href="styles.css?v=14">
+    <link rel="stylesheet" href="styles.css?v=15">
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -138,8 +138,20 @@
                 <h1 id="resultsTitle">תוצאות הזמנה</h1>
             </div>
 
-            <div class="results-summary" id="resultsSummary">
-                <!-- סיכום קרטונים -->
+            <!-- כותרת עליונה עם נתוני ההזמנה -->
+            <div class="results-header-bar" id="resultsHeaderBar">
+                <!-- ימולא דינמית -->
+            </div>
+
+            <!-- כפתור הדפסה גדול -->
+            <div class="results-print-action">
+                <button class="btn btn-primary btn-xlarge" id="printAllCartonsBtn" onclick="window.print()">
+                    🖨️ הדפסת מדבקות להזמנה
+                </button>
+            </div>
+
+            <div class="results-summary" id="resultsSummary" style="display: none;">
+                <!-- סיכום קרטונים - מוסתר, הנתונים עברו לכותרת -->
             </div>
 
             <div class="cartons-grid" id="cartonsGrid">
@@ -417,7 +429,7 @@
     <script src="supabase.js?v=17"></script>
     <script src="packing-algorithm.js?v=12"></script>
     <script src="mock_data.js?v=13"></script>
-    <script src="app.js?v=19"></script>
+    <script src="app.js?v=20"></script>
 </body>
 
 </html>

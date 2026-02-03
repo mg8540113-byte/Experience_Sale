@@ -368,14 +368,30 @@ function showResultsScreen(order) {
 
     titleEl.textContent = `תוצאות הזמנה: ${order.orderNumber}`;
 
-    // סיכום
+    // סיכום - מילוי הכותרת העליונה
     const totalItems = order.items.reduce((sum, i) => sum + i.quantity, 0);
-    summaryEl.innerHTML = `
-        <div>
-            <h2>📦 ${order.cartons.length} קרטונים</h2>
-            <span>${order.customerName} | ${totalItems} פריטים</span>
-        </div>
-    `;
+    const headerBarEl = document.getElementById('resultsHeaderBar');
+
+    if (headerBarEl) {
+        headerBarEl.innerHTML = `
+            <div class="header-bar-item">
+                <span class="header-bar-label">מס' הזמנה</span>
+                <span class="header-bar-value">${escapeHtml(order.orderNumber)}</span>
+            </div>
+            <div class="header-bar-item">
+                <span class="header-bar-label">לקוח</span>
+                <span class="header-bar-value">${escapeHtml(order.customerName)}</span>
+            </div>
+            <div class="header-bar-item">
+                <span class="header-bar-label">פריטים</span>
+                <span class="header-bar-value">${totalItems}</span>
+            </div>
+            <div class="header-bar-item">
+                <span class="header-bar-label">קרטונים</span>
+                <span class="header-bar-value">${order.cartons.length}</span>
+            </div>
+        `;
+    }
 
     // הגדרת מספר פריטים מקסימלי לעמוד הדפסה
     const MAX_ITEMS_PER_PAGE = 11;
