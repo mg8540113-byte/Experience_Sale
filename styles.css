@@ -1140,3 +1140,37 @@ body {
 .square-check { width: 18px; height: 18px; border: 1px solid #cbd5e1; border-radius: 4px; margin: 0 auto; }
 .col-qty { font-weight: 600; }
 
+
+/* ---------- הפרדת תצוגות (Screen vs Print) ---------- */
+
+/* ברירת מחדל (מסך): הסתרת תצוגת הדפסה */
+.print-only {
+    display: none !important;
+}
+
+/* הצגת אלמנטים של מסך כרגיל */
+.screen-only {
+    display: block; /* או flex/grid לפי הצורך, אבל block בטוח להתחלה */
+}
+
+/* בהדפסה: היפוך יוצרות */
+@media print {
+    .print-only {
+        display: block !important;
+    }
+    
+    .screen-only {
+        display: none !important;
+    }
+    
+    /* וידוא שהגריד עובד על האלמנט הנכון */
+    .cartons-grid {
+        display: block !important;
+    }
+    
+    /* שחזור תצוגת כותרת קלאסית במידה ונרצה חלק ממנה, אבל כאן אנחנו מסתירים הכל */
+    .carton-header {
+        display: block !important; /* כחלק מ screen-only הוא יוסתר, זה בסדר */
+    }
+}
+
