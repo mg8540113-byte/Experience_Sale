@@ -465,7 +465,7 @@ function showResultsScreen(order) {
                             תאריך הפקה: ${new Date().toLocaleDateString('he-IL')}
                         </div>
                         <button class="btn btn-secondary btn-sm" onclick="printSingleCarton(${carton.number})" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
-                            🖨️ הדפס קרטון זה
+                            🖨️ הדפסת מדבקות לקרטון זה
                         </button>
                     </div>
                 </div>
@@ -489,7 +489,7 @@ function showResultsScreen(order) {
             ` : '';
 
             printViews += `
-                <div class="carton-card print-only ${page > 1 ? 'continuation-page' : ''}">
+                <div class="carton-card print-only" data-carton-number="${carton.number}" ${page > 1 ? 'data-continuation="true"' : ''}>
                     ${pageNotice}
                     <div class="carton-header-clean">
                         <div class="header-meta-row">
@@ -1576,21 +1576,20 @@ window.confirmDeleteAllData = confirmDeleteAllData;
  */
 function printSingleCarton(cartonNumber) {
     // מצא את כל הקרטונים במסך
-    const allCartons = document.querySelectorAll('.carton-card.print-only');
+    const allPrintCartons = document.querySelectorAll('.carton-card.print-only');
     const allScreenCartons = document.querySelectorAll('.carton-card.screen-only');
 
     // הסתר את כל הקרטונים שאינם הקרטון המבוקש (לצורך הדפסה)
-    allCartons.forEach(card => {
-        // בדוק את מספר הקרטון מהכותרת
-        const headerText = card.querySelector('.stat-value, .header-center-hero .hero-value');
-        const cartonNum = parseInt(card.querySelector('.stat-box .stat-value')?.textContent?.split('/')[0]?.trim());
+    allPrintCartons.forEach(card => {
+        // בדוק את מספר הקרטון מה-data attribute
+        const cardCartonNum = parseInt(card.dataset.cartonNumber);
 
-        if (cartonNum !== cartonNumber) {
+        if (cardCartonNum !== cartonNumber) {
             card.classList.add('print-hidden');
         }
     });
 
-    // הסתר גם את כרטיסי המסך (screen-only)
+    // הסתר גם את כרטיסי המסך (screen-only) - הם לא אמורים להדפס בכלל
     allScreenCartons.forEach(card => {
         card.classList.add('print-hidden');
     });
@@ -1600,7 +1599,7 @@ function printSingleCarton(cartonNumber) {
 
     // לאחר ההדפסה, הסר את ההסתרה
     setTimeout(() => {
-        allCartons.forEach(card => {
+        allPrintCartons.forEach(card => {
             card.classList.remove('print-hidden');
         });
         allScreenCartons.forEach(card => {
