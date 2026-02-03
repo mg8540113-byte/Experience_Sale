@@ -461,6 +461,13 @@ function initManagementHub() {
             }
         });
     });
+
+    // כפתור מחיקת נתונים
+    const deleteBtn = document.getElementById('deleteAllDataBtn');
+    if (deleteBtn) {
+        // מסיר מאזינים קודמים אם נוצרו ע"י ה-querySelectorAll למעלה (למרות שאין לו dataset.panel אז זה לא יפריע)
+        deleteBtn.onclick = confirmDeleteAllData;
+    }
 }
 
 // ---------- ניהול מוצרים ----------
