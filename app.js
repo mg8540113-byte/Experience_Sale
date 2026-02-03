@@ -447,6 +447,12 @@ function showResultsScreen(order) {
                     <div style="text-align: center; margin-top: 1rem; color: var(--text-muted); font-size: 0.8125rem;">
                         תאריך הפקה: ${new Date().toLocaleDateString('he-IL')}
                     </div>
+                    
+                    <div style="text-align: center; margin-top: 0.75rem;">
+                        <button class="btn btn-secondary btn-sm" onclick="printSingleCarton(${carton.number}, '${order.id}')" style="font-size: 0.75rem; padding: 0.4rem 0.8rem;">
+                            🖨️ הדפס קרטון זה
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
@@ -1549,4 +1555,129 @@ async function confirmDeleteAllData() {
 
 window.confirmDeleteAllData = confirmDeleteAllData;
 
+// ---------- הדפסת קרטון בודד ----------
+
+/**
+ * הדפסת קרטון ספציפי בלבד
+ * @param {number} cartonNumber - מספר הקרטון להדפסה
+ * @param {string} orderId - מזהה ההזמנה
+ */
+function printSingleCarton(cartonNumber, orderId) {
+    const order = DataManager.getOrderById(orderId);
+    if (!order) {
+        alert('שגיאה: ההזמנה לא נמצאה');
+        return;
+    }
+
+    const carton = order.cartons.find(c => c.number === cartonNumber);
+    if (!carton) {
+        alert('שגיאה: הקרטון לא נמצא');
+        return;
+    }
+
+    // יצירת חלון הדפסה חדש עם הקרטון הספציפי בלבד
+    const printWindow = window.open('', '_blank', 'width=800,height=600');
+
+    // בניית ה-HTML להדפסה (בזבד על הסגנון של print-only)
+    const beltRange = PackingAlgorithm.getBeltRange(carton);
+    const totalItems = carton.items.reduce((sum, i) => sum + i.quantity, 0);
+
+    const printHTML = `
+        <!DOCTYPE html>
+        <html lang="he" dir="rtl">
+        <head>
+            <meta charset="UTF-8">
+            <title>קרטון ${carton.number} - הזמנה ${order.orderNumber}</title>
+            <link rel="stylesheet" href="styles.css">
+            <style>
+                body { 
+                    font-family: 'Segoe UI', Tahoma, sans-serif; 
+                    background: white; 
+                    color: #111;
+                    margin: 0;
+                    padding: 20px;
+                }
+                .print-only { display: block !important; }
+                .screen-only { display: none !important; }
+                @media print {
+                    body { padding: 0; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="carton-card print-only">
+                <div class="carton-header-clean">
+                    <div class="header-meta-row">
+                        <div class="meta-left">
+                            <span class="label">לקוח:</span>
+                            <span class="value big-customer">${escapeHtml(order.customerName)}</span>
+                        </div>
+                        <div class="meta-right">
+                            <span class="print-timestamp">${new Date().toLocaleDateString('he-IL')} ${new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                    </div>
+                    <div class="header-center-hero">
+                        <div class="hero-label">הזמנה</div>
+                        <div class="hero-value">${escapeHtml(order.orderNumber)}</div>
+                    </div>
+                    <div class="header-stats-row">
+                        <div class="stat-box">
+                            <span class="stat-label">קרטון</span>
+                            <span class="stat-value">${carton.number} / ${order.cartons.length}</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">סוג</span>
+                            <span class="stat-value">${carton.type}</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">טווח איסוף</span>
+                            <span class="stat-value">${beltRange}</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">פריטים</span>
+                            <span class="stat-value">${totalItems}</span>
+                        </div>
+                    </div>
+                </div>
+                <table class="print-items-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>מק"ט</th>
+                            <th>שם מוצר</th>
+                            <th>כמות</th>
+                            <th>ליין</th>
+                            <th>מיקום</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${carton.items.map((item, idx) => `
+                            <tr>
+                                <td>${idx + 1}</td>
+                                <td>${escapeHtml(item.sku)}</td>
+                                <td>${escapeHtml(item.name)}</td>
+                                <td><strong>${item.quantity}</strong></td>
+                                <td>${item.belt}</td>
+                                <td>${item.position}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+            <script>
+                window.onload = function() {
+                    window.print();
+                    // סגירת החלון לאחר הדפסה או ביטול
+                    window.onafterprint = function() { window.close(); };
+                };
+            </script>
+        </body>
+        </html>
+    `;
+
+    printWindow.document.write(printHTML);
+    printWindow.document.close();
+}
+
+window.printSingleCarton = printSingleCarton;
 
