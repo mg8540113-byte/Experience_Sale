@@ -104,6 +104,23 @@ const PassoverGenerator = {
         if (!confirm('⚠️ פעולה זו תיצור 80 הזמנות עומס (כ-13,000 פריטים).\nהאם להמשיך?')) return;
 
         const products = DataManager.getProducts();
+
+        // תיקון: יצירת סוגי קרטונים ברירת מחדל אם אין
+        let cartonTypes = DataManager.getCartonTypes();
+        if (!cartonTypes || cartonTypes.length === 0) {
+            console.log('Creating default carton types...');
+            const defaultTypes = [
+                { name: 'קרטון קטן (S)', maxVolume: 6000 },
+                { name: 'קרטון בינוני (M)', maxVolume: 12000 },
+                { name: 'קרטון ענק (XL)', maxVolume: 24000 }
+            ];
+            for (const type of defaultTypes) {
+                await DataManager.addCartonType(type);
+            }
+            // רענון הרשימה אחרי יצירה
+            cartonTypes = DataManager.getCartonTypes();
+        }
+
         if (!products || products.length === 0) {
             alert('❌ אין מוצרים במערכת! אנא צור מוצרים (למשל בעזרת "פרטי פסח") לפני יצירת הזמנות.');
             return;
@@ -130,8 +147,8 @@ const PassoverGenerator = {
                     }
                 }
 
-                // חישוב אריזה לקרטונים
-                const cartons = PackingAlgorithm.packOrder(items, products, DataManager.getCartonTypes());
+                // חישוב אריזה (תיקון: נוסף חישוב בזמן יצירה)
+                const cartons = PackingAlgorithm.packOrder(items, products, cartonTypes);
 
                 const order = {
                     orderNumber: 90000 + i, // ספרור מיוחד להזמנות עומס
@@ -139,7 +156,7 @@ const PassoverGenerator = {
                     address: `רחוב הבדיקות ${Math.floor(Math.random() * 100)}, עיר המחסנים`,
                     deliveryLine: `קו ${Math.floor(Math.random() * 10) + 1}`,
                     items: items,
-                    cartons: cartons, // הוספת הקרטונים
+                    cartons: cartons, // הוספת הקרטונים שחושבו
                     status: 'חדשה',
                     createdAt: new Date().toISOString()
                 };
@@ -166,7 +183,6 @@ const PassoverGenerator = {
     }
 };
 
-// הפיכת הפונקציות לזמינות גלובלית
 // הפיכת הפונקציות לזמינות גלובלית
 window.generatePassoverData = () => PassoverGenerator.generate();
 window.startMockOrders = () => {
