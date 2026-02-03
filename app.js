@@ -355,78 +355,71 @@ function showResultsScreen(order) {
 
         return `
             <div class="carton-card">
-                <!-- כותרת ראשית להדפסה ולתצוגה -->
-                <div class="carton-header-modern">
-                    <div class="header-top-row">
-                        <div class="customer-info">
+                <!-- כותרת מודרנית ומינימליסטית - עיצוב v2 -->
+                <div class="carton-header-clean">
+                    
+                    <!-- שורה עליונה: תאריך ולקוח -->
+                    <div class="header-meta-row">
+                        <div class="meta-left">
                             <span class="label">לקוח:</span>
-                            <span class="value large">${escapeHtml(order.customerName)}</span>
+                            <span class="value big-customer">${escapeHtml(order.customerName)}</span>
                         </div>
-                        <div class="order-info">
-                            <span class="label">הזמנה:</span>
-                            <span class="value">${escapeHtml(order.orderNumber)}</span>
+                        <div class="meta-right">
+                           <span class="print-timestamp">${new Date().toLocaleDateString('he-IL')}</span>
                         </div>
                     </div>
-                    
-                    <div class="header-details-grid">
-                        <div class="detail-item">
-                            <span class="label">קרטון</span>
-                            <span class="value box-number">${carton.number} <span class="total">מתוך ${order.cartons.length}</span></span>
+
+                    <!-- מרכז: מספר הזמנה גדול -->
+                    <div class="header-center-hero">
+                        <div class="hero-label">הזמנה</div>
+                        <div class="hero-value">${escapeHtml(order.orderNumber)}</div>
+                    </div>
+
+                    <!-- שורה תחתונה: פרטי קרטון ולוגיסטיקה -->
+                    <div class="header-info-bar">
+                        <div class="info-block">
+                            <span class="block-label">קרטון</span>
+                            <span class="block-value box-highlight">${carton.number} <span class="of-total">/ ${order.cartons.length}</span></span>
                         </div>
-                        <div class="detail-item">
-                            <span class="label">סוג קרטון</span>
-                            <span class="value">${carton.type}</span>
+                        <div class="info-block">
+                            <span class="block-label">סוג</span>
+                            <span class="block-value">${carton.type}</span>
                         </div>
-                         <div class="detail-item">
-                            <span class="label">ליין איסוף</span>
-                            <span class="value">${beltRange}</span>
+                         <div class="info-block">
+                            <span class="block-label">ליין</span>
+                            <span class="block-value">${beltRange}</span>
                         </div>
-                        <div class="detail-item">
-                            <span class="label">קו חלוקה</span>
-                            <span class="value">${escapeHtml(order.deliveryLine || '-')}</span>
+                        <div class="info-block">
+                            <span class="block-label">קו חלוקה</span>
+                            <span class="block-value">${escapeHtml(order.deliveryLine || '-')}</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="carton-body">
-                    <!-- בר ניצולת (יוסתר בהדפסה אם יוחלט, אבל נשאיר כרגע) -->
-                    <div class="utilization-wrapper no-print">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 2px;">
-                            <span>ניצולת נפח</span>
-                            <span>${utilizationPercent}%</span>
-                        </div>
-                        <div class="utilization-bar">
-                            <div class="utilization-fill ${utilizationClass}" style="width: ${utilizationPercent}%"></div>
-                        </div>
-                    </div>
-                    
+                <div class="carton-body clean-body">
                     <div class="carton-items">
-                        <table class="modern-table">
+                        <table class="clean-table">
                             <thead>
                                 <tr>
-                                    <th class="check-col">ליקוט</th>
-                                    <th>מק"ט</th>
-                                    <th>תיאור מוצר</th>
-                                    <th>כמות</th>
-                                    <th>מיקום</th>
+                                    <th class="col-check">✔</th>
+                                    <th class="col-sku">מק"ט</th>
+                                    <th class="col-name">תיאור מוצר</th>
+                                    <th class="col-qty">כמות</th>
+                                    <th class="col-loc">מיקום</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${carton.items.map(item => `
                                     <tr>
-                                        <td class="check-col"><div class="checkbox-square"></div></td>
-                                        <td class="sku-cell">${escapeHtml(item.sku)}</td>
-                                        <td class="name-cell">${escapeHtml(item.name)}</td>
-                                        <td class="qty-cell">${item.quantity}</td>
-                                        <td class="loc-cell">ליין ${item.belt}-${item.position}</td>
+                                        <td class="col-check"><div class="square-check"></div></td>
+                                        <td class="col-sku">${escapeHtml(item.sku)}</td>
+                                        <td class="col-name">${escapeHtml(item.name)}</td>
+                                        <td class="col-qty">${item.quantity}</td>
+                                        <td class="col-loc">ליין ${item.belt}-${item.position}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
                         </table>
-                    </div>
-                    
-                    <div class="print-footer">
-                        הופק בתאריך: ${new Date().toLocaleDateString('he-IL')} בשעה ${new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
                     </div>
                 </div>
             </div>
