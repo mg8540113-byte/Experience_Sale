@@ -711,7 +711,9 @@ function refreshCartonTypesTable() {
 }
 
 function openCartonTypeModal(typeId = null) {
-    const type = typeId ? DataManager.getCartonTypes().find(t => t.id === typeId) : null;
+    // המרה לטיפוס אחיד - תמיד מחרוזת
+    const searchId = typeId ? String(typeId) : null;
+    const type = searchId ? DataManager.getCartonTypes().find(t => String(t.id) === searchId) : null;
     const isEdit = !!type;
 
     const content = `

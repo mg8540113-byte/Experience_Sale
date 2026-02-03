@@ -243,7 +243,8 @@ const DataManager = {
 
     updateCartonType(id, updates) {
         const types = this.getCartonTypes();
-        const index = types.findIndex(t => t.id === id);
+        const searchId = String(id);
+        const index = types.findIndex(t => String(t.id) === searchId);
         if (index === -1) return null;
 
         const oldName = types[index].name;
@@ -257,8 +258,9 @@ const DataManager = {
 
     deleteCartonType(id) {
         let types = this.getCartonTypes();
-        const type = types.find(t => t.id === id);
-        types = types.filter(t => t.id !== id);
+        const searchId = String(id);
+        const type = types.find(t => String(t.id) === searchId);
+        types = types.filter(t => String(t.id) !== searchId);
         cache.cartonTypes = types;
         setLocalData(this.KEYS.CARTON_TYPES, types);
         if (type) this.syncCartonType(type, 'delete');
