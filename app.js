@@ -608,8 +608,9 @@ function refreshBeltFilter() {
 }
 
 function openProductModal(productId = null) {
-    const product = productId ? DataManager.getProducts().find(p => p.id === productId) : null;
+    const product = productId ? DataManager.getProducts().find(p => String(p.id) === String(productId)) : null;
     const isEdit = !!product;
+    const belts = DataManager.getBelts();
 
     const content = `
         <form id="productForm">
@@ -633,7 +634,14 @@ function openProductModal(productId = null) {
             <div class="form-row">
                 <div class="form-group">
                     <label for="productBelt">ליין</label>
-                    <input type="number" id="productBelt" value="${product?.belt || ''}" min="1">
+                    <select id="productBelt" class="form-control">
+                        <option value="">-- בחר ליין --</option>
+                        ${belts.map(b => `
+                            <option value="${b.number}" ${product?.belt === b.number ? 'selected' : ''}>
+                                ליין ${b.number} - ${b.name || ''}
+                            </option>
+                        `).join('')}
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="productPosition">מיקום</label>
@@ -673,6 +681,7 @@ function handleProductSubmit(e) {
 
     closeModal();
     refreshProductsTable();
+    refreshVisualMap(); // סנכרון אוטומטי של מפת הליינים
 }
 
 function deleteProduct(id) {
@@ -680,6 +689,7 @@ function deleteProduct(id) {
         DataManager.deleteProduct(id);
         closeModal();
         refreshProductsTable();
+        refreshVisualMap(); // סנכרון אוטומטי
     }
 }
 
