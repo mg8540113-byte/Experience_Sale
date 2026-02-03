@@ -1249,13 +1249,4 @@ async function confirmDeleteAllData() {
 
 window.confirmDeleteAllData = confirmDeleteAllData;
 
-// מנגנון אבטחה: האזנה גלובלית לכפתור המחיקה (למקרה שהאתחול הרגיל נכשל)
-document.addEventListener('click', (e) => {
-    // בדוק אם הלחיצה הייתה על כפתור המחיקה או אחד הילדים שלו
-    const btn = e.target.closest('#deleteAllDataBtn');
-    if (btn) {
-        // מנע התנהגות כפולה אם כבר קיים מאזין
-        e.stopImmediatePropagation();
-        confirmDeleteAllData();
-    }
-});
+
