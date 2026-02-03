@@ -1208,3 +1208,35 @@ function importExcelOrders() {
 }
 
 window.importExcelOrders = importExcelOrders;
+
+// ---------- מחיקת כל הנתונים ----------
+
+async function confirmDeleteAllData() {
+    if (!confirm('⚠️ אזהרה: פעולה זו תמחק את כל הנתונים (מוצרים, הזמנות, הגדרות)!\n\nהאם אתה בטוח שברצונך להמשיך?')) {
+        return;
+    }
+
+    const password = prompt('אנא הזן את סיסמת המערכת לאישור המחיקה:');
+
+    if (password === APP_PASSWORD) {
+        const confirmDelete = confirm('אישור סופי: הנתונים יימחקו ולא ניתן יהיה לשחזר אותם.\nהאם לבצע מחיקה?');
+        if (!confirmDelete) return;
+
+        try {
+            document.body.style.cursor = 'wait';
+            await DataManager.deleteAllData();
+
+            alert('✅ כל הנתונים נמחקו בהצלחה!\nהדף ירענן כעת.');
+            location.reload();
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('שגיאה במחיקת הנתונים: ' + error.message);
+        } finally {
+            document.body.style.cursor = 'default';
+        }
+    } else {
+        alert('❌ סיסמה שגויה! הפעולה בוטלה.');
+    }
+}
+
+window.confirmDeleteAllData = confirmDeleteAllData;

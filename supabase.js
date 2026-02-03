@@ -465,6 +465,47 @@ const DataManager = {
         }
     },
 
+    // ---------- ניקוי נתונים ----------
+
+    async deleteAllData() {
+        console.log('מבצע מחיקת נתונים מלאה...');
+
+        // 1. נקה cache מקומי
+        cache.products = [];
+        cache.belts = [];
+        cache.cartonTypes = [];
+        cache.orders = [];
+        cache.orderCounter = 0;
+
+        // 2. נקה localStorage
+        localStorage.removeItem(this.KEYS.PRODUCTS);
+        localStorage.removeItem(this.KEYS.BELTS);
+        localStorage.removeItem(this.KEYS.CARTON_TYPES);
+        localStorage.removeItem(this.KEYS.ORDERS);
+        localStorage.removeItem(this.KEYS.ORDER_COUNTER);
+
+        // 3. נקה Supabase
+        if (useSupabase) {
+            try {
+                // מחיקה בסדר הפוך בגלל תלויות (Foreign Keys)
+                // במקרה הזה אין אכיפת FK קשוחה בקוד שלנו, אבל ליתר ביטחון
+                await supabaseClient.from('orders').delete().neq('id', 0);
+                await supabaseClient.from('products').delete().neq('id', 0);
+                await supabaseClient.from('belts').delete().neq('id', 0);
+                await supabaseClient.from('carton_types').delete().neq('id', 0);
+                // איפוס מונה
+                await supabaseClient.from('settings').update({ value: 0 }).eq('key', 'order_counter');
+
+                console.log('✅ נתונים נמחקו גם מ-Supabase');
+            } catch (e) {
+                console.error('Error clearing Supabase:', e);
+                alert('שגיאה במחיקת נתונים מהענן: ' + e.message);
+            }
+        }
+
+        return true;
+    },
+
     // ---------- נתוני דוגמה ----------
 
     loadSampleData() {
