@@ -493,36 +493,56 @@ const DataManager = {
             try {
                 console.log('מוחק נתונים מ-Supabase...');
 
-                // מחיקת הזמנות
-                const { error: ordersError } = await supabaseClient.from('orders').delete().gte('id', 0);
-                if (ordersError) console.error('שגיאה במחיקת הזמנות:', ordersError);
+                // מחיקת הזמנות - שימוש בתנאי not.is.null שעובד עם כל סוג ID
+                const { error: ordersError, count: ordersCount } = await supabaseClient
+                    .from('orders')
+                    .delete()
+                    .not('id', 'is', null);
+                if (ordersError) console.error('שגיאה במחיקת הזמנות:', ordersError.message);
                 else console.log('✓ הזמנות נמחקו');
 
                 // מחיקת מוצרים
-                const { error: productsError } = await supabaseClient.from('products').delete().gte('id', 0);
-                if (productsError) console.error('שגיאה במחיקת מוצרים:', productsError);
+                const { error: productsError } = await supabaseClient
+                    .from('products')
+                    .delete()
+                    .not('id', 'is', null);
+                if (productsError) console.error('שגיאה במחיקת מוצרים:', productsError.message);
                 else console.log('✓ מוצרים נמחקו');
 
                 // מחיקת ליינים
-                const { error: beltsError } = await supabaseClient.from('belts').delete().gte('id', 0);
-                if (beltsError) console.error('שגיאה במחיקת ליינים:', beltsError);
+                const { error: beltsError } = await supabaseClient
+                    .from('belts')
+                    .delete()
+                    .not('id', 'is', null);
+                if (beltsError) console.error('שגיאה במחיקת ליינים:', beltsError.message);
                 else console.log('✓ ליינים נמחקו');
 
                 // מחיקת סוגי קרטונים
-                const { error: cartonError } = await supabaseClient.from('carton_types').delete().gte('id', 0);
-                if (cartonError) console.error('שגיאה במחיקת סוגי קרטונים:', cartonError);
+                const { error: cartonError } = await supabaseClient
+                    .from('carton_types')
+                    .delete()
+                    .not('id', 'is', null);
+                if (cartonError) console.error('שגיאה במחיקת סוגי קרטונים:', cartonError.message);
                 else console.log('✓ סוגי קרטונים נמחקו');
 
                 // איפוס מונה
-                await supabaseClient.from('settings').update({ value: 0 }).eq('key', 'order_counter');
+                await supabaseClient.from('settings').upsert({ key: 'order_counter', value: 0 });
 
                 console.log('✅ כל הנתונים נמחקו מ-Supabase');
+
+                // בדיקת שהמחיקה הצליחה
+                const { data: remainingOrders } = await supabaseClient.from('orders').select('id').limit(5);
+                if (remainingOrders && remainingOrders.length > 0) {
+                    console.error('⚠️ עדיין יש הזמנות ב-Supabase!', remainingOrders.length);
+                    alert('עדיין יש הזמנות בשרת! בדוק את הרשאות (RLS) ב-Supabase.');
+                }
             } catch (e) {
                 console.error('Error clearing Supabase:', e);
                 alert('שגיאה במחיקת נתונים מהענן: ' + e.message);
             }
         } else {
             console.warn('⚠️ Supabase לא מחובר - הנתונים נמחקו רק מקומית!');
+            alert('⚠️ אזהרה: לא מחובר ל-Supabase!\nהנתונים נמחקו רק במחשב הזה.');
         }
 
         return true;
