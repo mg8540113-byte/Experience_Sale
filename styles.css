@@ -1290,3 +1290,29 @@ body {
         display: none !important;
     }
 }
+
+/* ---------- תיקון עמוד ריק נוסף בהדפסת קרטון בודד ---------- */
+@media print {
+    /* מניעת עמוד ריק - הסתרה מוחלטת של אלמנטים מוסתרים */
+    .print-hidden,
+    .print-hidden * {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        page-break-after: avoid !important;
+        page-break-before: avoid !important;
+        break-after: avoid !important;
+        break-before: avoid !important;
+    }
+    
+    /* ביטול page-break-after מהקרטון האחרון שמוצג */
+    .carton-card.print-only:not(.print-hidden):last-of-type,
+    .carton-card.print-only:not(.print-hidden):only-of-type {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+}
