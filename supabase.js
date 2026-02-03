@@ -548,7 +548,7 @@ const DataManager = {
         return true;
     },
 
-    // ---------- נתוני דוגמה ----------
+    // ---------- טעינת נתונים מהשרת ----------
 
     loadSampleData() {
         // טעינה מהשרת (אסינכרונית)
@@ -558,31 +558,8 @@ const DataManager = {
             if (typeof refreshProductsTable === 'function') refreshProductsTable();
         });
 
-        // אם אין נתונים מקומיים, צור דוגמה
-        if (this.getProducts().length === 0) {
-            const belts = [
-                { number: 1, name: 'ליין ביגוד' },
-                { number: 2, name: 'ליין אלקטרוניקה' },
-                { number: 3, name: 'ליין כללי' }
-            ];
-            belts.forEach(b => this.addBelt(b));
-
-            const products = [
-                { sku: 'SKU001', name: 'חולצה לבנה', volume: 500, belt: 1, position: 1 },
-                { sku: 'SKU002', name: 'מכנסיים כחולים', volume: 800, belt: 1, position: 2 },
-                { sku: 'SKU003', name: 'אוזניות אלחוטיות', volume: 300, belt: 2, position: 1 },
-                { sku: 'SKU004', name: 'מטען USB', volume: 100, belt: 2, position: 2 },
-                { sku: 'SKU005', name: 'ספר', volume: 400, belt: 3, position: 1 }
-            ];
-            products.forEach(p => this.addProduct(p));
-
-            const cartonTypes = [
-                { name: 'קטן', maxVolume: 1000, maxWeight: 2000 },
-                { name: 'בינוני', maxVolume: 3000, maxWeight: 5000 },
-                { name: 'גדול', maxVolume: 6000, maxWeight: 10000 }
-            ];
-            cartonTypes.forEach(c => this.addCartonType(c));
-        }
+        // הערה: לא ניצור יותר מוצרי דוגמה אוטומטית
+        // המשתמש יכול ליצור מוצרים דרך "הוספת פרטי פסח" או ידנית
     }
 };
 
