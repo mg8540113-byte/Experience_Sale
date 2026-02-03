@@ -104,21 +104,12 @@ const PassoverGenerator = {
         if (!confirm('⚠️ פעולה זו תיצור 80 הזמנות עומס (כ-13,000 פריטים).\nהאם להמשיך?')) return;
 
         const products = DataManager.getProducts();
+        const cartonTypes = DataManager.getCartonTypes();
 
-        // תיקון: יצירת סוגי קרטונים ברירת מחדל אם אין
-        let cartonTypes = DataManager.getCartonTypes();
+        // בדיקה: חייבים קרטונים מוגדרים לפני יצירת הזמנות
         if (!cartonTypes || cartonTypes.length === 0) {
-            console.log('Creating default carton types...');
-            const defaultTypes = [
-                { name: 'קרטון קטן (S)', maxVolume: 6000 },
-                { name: 'קרטון בינוני (M)', maxVolume: 12000 },
-                { name: 'קרטון ענק (XL)', maxVolume: 24000 }
-            ];
-            for (const type of defaultTypes) {
-                await DataManager.addCartonType(type);
-            }
-            // רענון הרשימה אחרי יצירה
-            cartonTypes = DataManager.getCartonTypes();
+            alert('❌ אין סוגי קרטונים מוגדרים!\n\nאנא הגדר סוגי קרטונים בניהול → ניהול סוגי קרטונים לפני יצירת הזמנות.');
+            return;
         }
 
         if (!products || products.length === 0) {
