@@ -402,7 +402,7 @@ function showResultsScreen(order) {
                                         <td>${escapeHtml(item.sku)}</td>
                                         <td>${escapeHtml(item.name)}</td>
                                         <td>${item.quantity}</td>
-                                        <td>סרט ${item.belt}, מיקום ${item.position}</td>
+                                        <td>ליין ${item.belt}, מיקום ${item.position}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -497,7 +497,7 @@ function refreshProductsTable() {
     tbody.innerHTML = products.map(product => {
         const beltObj = belts.find(b => b.number === product.belt);
         // הצג את שם הליין אם קיים, אחרת הצג "סרט X"
-        const beltDisplay = beltObj ? beltObj.name : (product.belt ? `סרט ${product.belt}` : '-');
+        const beltDisplay = beltObj ? beltObj.name : (product.belt ? `ליין ${product.belt}` : '-');
 
         return `
         <tr data-id="${product.id}">
@@ -557,7 +557,7 @@ function openProductModal(productId = null) {
             
             <div class="form-row">
                 <div class="form-group">
-                    <label for="productBelt">סרט</label>
+                    <label for="productBelt">ליין</label>
                     <input type="number" id="productBelt" value="${product?.belt || ''}" min="1">
                 </div>
                 <div class="form-group">

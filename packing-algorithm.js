@@ -295,12 +295,12 @@ const PackingAlgorithm = {
     },
 
     /**
-     * קבלת טווח סרטים לתצוגה
+     * קבלת טווח ליינים לתצוגה
      */
     getBeltRange(carton) {
         if (!carton.belts || carton.belts.length === 0) return '-';
-        if (carton.belts.length === 1) return `סרט ${carton.belts[0]}`;
-        return `סרטים ${carton.belts[0]}-${carton.belts[carton.belts.length - 1]}`;
+        if (carton.belts.length === 1) return `ליין ${carton.belts[0]}`;
+        return `ליינים ${carton.belts[0]}-${carton.belts[carton.belts.length - 1]}`;
     }
 };
 
