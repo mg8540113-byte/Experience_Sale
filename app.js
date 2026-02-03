@@ -352,13 +352,75 @@ function showResultsScreen(order) {
         const utilizationPercent = Math.round(utilization * 100);
         const utilizationClass = PackingAlgorithm.getUtilizationClass(utilization);
         const beltRange = PackingAlgorithm.getBeltRange(carton);
+        const totalItems = carton.items.reduce((sum, i) => sum + i.quantity, 0);
 
-        return `
-            <div class="carton-card">
-                <!-- כותרת מודרנית ומינימליסטית - עיצוב v2 -->
-                <div class="carton-header-clean">
+        // --- תצוגת מסך (Screen View) ---
+        const screenView = `
+            <div class="carton-card screen-only">
+                <div class="carton-header">
+                    <span class="carton-number">קרטון ${carton.number} מתוך ${order.cartons.length}</span>
+                    <span class="carton-type">קרטון ${carton.type}</span>
+                </div>
+                <div class="carton-body">
+                    <div class="carton-info">
+                        <div class="carton-info-item">
+                            <div class="carton-info-label">הזמנה</div>
+                            <div class="carton-info-value">${escapeHtml(order.orderNumber)}</div>
+                        </div>
+                        <div class="carton-info-item">
+                            <div class="carton-info-label">טווח איסוף</div>
+                            <div class="carton-info-value">${beltRange}</div>
+                        </div>
+                        <div class="carton-info-item">
+                            <div class="carton-info-label">פריטים</div>
+                            <div class="carton-info-value">${totalItems}</div>
+                        </div>
+                    </div>
                     
-                    <!-- שורה עליונה: תאריך ולקוח -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-bottom: 0.25rem;">
+                            <span>ניצולת</span>
+                            <span>${utilizationPercent}%</span>
+                        </div>
+                        <div class="utilization-bar">
+                            <div class="utilization-fill ${utilizationClass}" style="width: ${utilizationPercent}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="carton-items">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>מק"ט</th>
+                                    <th>שם</th>
+                                    <th>כמות</th>
+                                    <th>מדף</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${carton.items.map(item => `
+                                    <tr>
+                                        <td>${escapeHtml(item.sku)}</td>
+                                        <td>${escapeHtml(item.name)}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>ליין ${item.belt}, מיקום ${item.position}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 1rem; color: var(--text-muted); font-size: 0.8125rem;">
+                        תאריך הפקה: ${new Date().toLocaleDateString('he-IL')}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // --- תצוגת הדפסה (Print View) ---
+        const printView = `
+            <div class="carton-card print-only">
+                <div class="carton-header-clean">
                     <div class="header-meta-row">
                         <div class="meta-left">
                             <span class="label">לקוח:</span>
@@ -369,13 +431,11 @@ function showResultsScreen(order) {
                         </div>
                     </div>
 
-                    <!-- מרכז: מספר הזמנה גדול -->
                     <div class="header-center-hero">
                         <div class="hero-label">הזמנה</div>
                         <div class="hero-value">${escapeHtml(order.orderNumber)}</div>
                     </div>
 
-                    <!-- שורה תחתונה: פרטי קרטון ולוגיסטיקה -->
                     <div class="header-info-bar">
                         <div class="info-block">
                             <span class="block-label">קרטון</span>
@@ -421,9 +481,15 @@ function showResultsScreen(order) {
                             </tbody>
                         </table>
                     </div>
+                    
+                    <div class="print-footer">
+                        הופק בתאריך: ${new Date().toLocaleDateString('he-IL')} בשעה ${new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
                 </div>
             </div>
         `;
+
+        return screenView + printView;
     }).join('');
 
     showScreen('results-view');
