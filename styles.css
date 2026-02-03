@@ -1260,3 +1260,33 @@ body {
         display: none !important;
     }
 }
+
+/* ---------- כפתור הדפסה בכרטיס קרטון - מיקום קבוע בתחתית ---------- */
+.carton-card.screen-only {
+    display: flex;
+    flex-direction: column;
+}
+
+.carton-card.screen-only .carton-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.carton-card-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* הסתרת קרטונים בזמן הדפסת קרטון בודד */
+@media print {
+    .print-hidden {
+        display: none !important;
+    }
+}
