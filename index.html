@@ -191,10 +191,11 @@
                     <p>טוען 400 מוצרים ב-20 מחלקות</p>
                 </div>
 
-                <div class="hub-tile" onclick="window.generateMockOrders()"
-                    style="border: 2px dashed #2196F3; background: #e3f2fd;">
+                <div class="hub-tile"
+                    onclick="if(window.startMockOrders) window.startMockOrders(); else alert('טוען נתונים... אנא המתן ונסה שוב')"
+                    style="border: 2px dashed #2196F3; background: #e3f2fd; cursor: pointer;">
                     <div class="tile-icon">📑</div>
-                    <h3>צור הזמנות עומס</h3>
+                    <h3>צור עומס הזמנות לבדיקה</h3>
                     <p>80 הזמנות, 170 פריטים כ"א</p>
                 </div>
 

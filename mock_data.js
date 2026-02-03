@@ -163,5 +163,9 @@ const PassoverGenerator = {
 };
 
 // הפיכת הפונקציות לזמינות גלובלית
+// הפיכת הפונקציות לזמינות גלובלית
 window.generatePassoverData = () => PassoverGenerator.generate();
-window.generateMockOrders = () => PassoverGenerator.generateOrders();
+window.startMockOrders = () => {
+    console.log('Starting mock orders generation...');
+    PassoverGenerator.generateOrders();
+};
