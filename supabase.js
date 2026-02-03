@@ -489,22 +489,40 @@ const DataManager = {
         localStorage.removeItem(this.KEYS.ORDER_COUNTER);
 
         // 3. נקה Supabase
-        if (useSupabase) {
+        if (useSupabase && supabaseClient) {
             try {
-                // מחיקה בסדר הפוך בגלל תלויות (Foreign Keys)
-                // במקרה הזה אין אכיפת FK קשוחה בקוד שלנו, אבל ליתר ביטחון
-                await supabaseClient.from('orders').delete().neq('id', 0);
-                await supabaseClient.from('products').delete().neq('id', 0);
-                await supabaseClient.from('belts').delete().neq('id', 0);
-                await supabaseClient.from('carton_types').delete().neq('id', 0);
+                console.log('מוחק נתונים מ-Supabase...');
+
+                // מחיקת הזמנות
+                const { error: ordersError } = await supabaseClient.from('orders').delete().gte('id', 0);
+                if (ordersError) console.error('שגיאה במחיקת הזמנות:', ordersError);
+                else console.log('✓ הזמנות נמחקו');
+
+                // מחיקת מוצרים
+                const { error: productsError } = await supabaseClient.from('products').delete().gte('id', 0);
+                if (productsError) console.error('שגיאה במחיקת מוצרים:', productsError);
+                else console.log('✓ מוצרים נמחקו');
+
+                // מחיקת ליינים
+                const { error: beltsError } = await supabaseClient.from('belts').delete().gte('id', 0);
+                if (beltsError) console.error('שגיאה במחיקת ליינים:', beltsError);
+                else console.log('✓ ליינים נמחקו');
+
+                // מחיקת סוגי קרטונים
+                const { error: cartonError } = await supabaseClient.from('carton_types').delete().gte('id', 0);
+                if (cartonError) console.error('שגיאה במחיקת סוגי קרטונים:', cartonError);
+                else console.log('✓ סוגי קרטונים נמחקו');
+
                 // איפוס מונה
                 await supabaseClient.from('settings').update({ value: 0 }).eq('key', 'order_counter');
 
-                console.log('✅ נתונים נמחקו גם מ-Supabase');
+                console.log('✅ כל הנתונים נמחקו מ-Supabase');
             } catch (e) {
                 console.error('Error clearing Supabase:', e);
                 alert('שגיאה במחיקת נתונים מהענן: ' + e.message);
             }
+        } else {
+            console.warn('⚠️ Supabase לא מחובר - הנתונים נמחקו רק מקומית!');
         }
 
         return true;
