@@ -45,8 +45,24 @@ function showApp() {
     initModal();
     initExcelImport();
 
-    // טעינת מסך ראשי
-    showScreen('orders-dashboard');
+    // טעינת מסך אחרון שנשמר
+    const lastScreen = localStorage.getItem('last_screen');
+    const lastOrderId = localStorage.getItem('last_order_id');
+
+    if (lastScreen === 'results-view' && lastOrderId) {
+        const order = DataManager.getOrders().find(o => String(o.id) === String(lastOrderId));
+        if (order) {
+            showResultsScreen(order);
+            showScreen('results-view');
+        } else {
+            showScreen('orders-dashboard');
+        }
+    } else if (lastScreen && document.getElementById(lastScreen)) {
+        showScreen(lastScreen);
+    } else {
+        showScreen('orders-dashboard');
+    }
+
     refreshOrdersTable();
 }
 
@@ -115,6 +131,15 @@ function showScreen(screenId) {
     const printBtn = document.getElementById('printCartonsBtn');
     if (printBtn) {
         printBtn.style.display = screenId === 'results-view' ? 'inline-flex' : 'none';
+    }
+
+    // שמירת מיקום אחרון (למעט כניסה)
+    if (screenId !== 'loginScreen') {
+        localStorage.setItem('last_screen', screenId);
+        // אם עזבנו את מסך התוצאות, ננקה את ה-ID השמור שלא נחזור להזמנה הישנה סתם
+        if (screenId !== 'results-view') {
+            localStorage.removeItem('last_order_id');
+        }
     }
 }
 
@@ -334,6 +359,12 @@ function showResultsScreen(order) {
     const titleEl = document.getElementById('resultsTitle');
     const summaryEl = document.getElementById('resultsSummary');
     const gridEl = document.getElementById('cartonsGrid');
+
+    // שמירת ה-ID של ההזמנה המוצגת לטעינה מחדש
+    if (order.id) {
+        localStorage.setItem('last_order_id', order.id);
+        localStorage.setItem('last_screen', 'results-view');
+    }
 
     titleEl.textContent = `תוצאות הזמנה: ${order.orderNumber}`;
 
