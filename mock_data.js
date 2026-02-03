@@ -130,12 +130,16 @@ const PassoverGenerator = {
                     }
                 }
 
+                // חישוב אריזה לקרטונים
+                const cartons = PackingAlgorithm.packOrder(items, products, DataManager.getCartonTypes());
+
                 const order = {
                     orderNumber: 90000 + i, // ספרור מיוחד להזמנות עומס
                     customerName: `לקוח עומס ${i}`,
                     address: `רחוב הבדיקות ${Math.floor(Math.random() * 100)}, עיר המחסנים`,
                     deliveryLine: `קו ${Math.floor(Math.random() * 10) + 1}`,
                     items: items,
+                    cartons: cartons, // הוספת הקרטונים
                     status: 'חדשה',
                     createdAt: new Date().toISOString()
                 };
