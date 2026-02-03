@@ -801,7 +801,7 @@ function refreshVisualMap() {
                         <div class="lane-products">
                             ${products.length === 0 ? '<div class="lane-empty">אין מוצרים בליין זה</div>' : ''}
                             ${products.map(product => `
-                                <div class="lane-product" onclick="openProductModal('${product.id}')">
+                                <div class="lane-product" onclick="openLaneProductMenu('${product.id}')">
                                     <div class="product-position">${product.position || '-'}</div>
                                     <div class="product-info">
                                         <div class="product-sku">${escapeHtml(product.sku)}</div>
@@ -816,6 +816,104 @@ function refreshVisualMap() {
         </div>
     `;
 }
+
+/**
+ * פתיחת תפריט פעולות למוצר במפת הליינים
+ */
+function openLaneProductMenu(productId) {
+    const product = DataManager.getProducts().find(p => String(p.id) === String(productId));
+    if (!product) {
+        alert('מוצר לא נמצא');
+        return;
+    }
+
+    const belts = DataManager.getBelts();
+
+    const content = `
+        <div class="lane-product-menu">
+            <div class="product-info-header">
+                <strong>${escapeHtml(product.name)}</strong>
+                <br><span class="text-muted">מק"ט: ${escapeHtml(product.sku)}</span>
+                <br><span class="text-muted">ליין נוכחי: ${product.belt} | מיקום: ${product.position || '-'}</span>
+            </div>
+            
+            <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
+            
+            <div class="form-group">
+                <label>העברה לליין אחר:</label>
+                <select id="newBeltSelect" class="form-control">
+                    <option value="">-- בחר ליין --</option>
+                    ${belts.map(b => `
+                        <option value="${b.number}" ${b.number === product.belt ? 'selected' : ''}>
+                            ליין ${b.number} - ${b.name || ''}
+                        </option>
+                    `).join('')}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>מיקום בליין:</label>
+                <input type="number" id="newPositionInput" class="form-control" 
+                       value="${product.position || 1}" min="1" placeholder="מספר מיקום">
+            </div>
+            
+            <div class="form-actions" style="gap: 0.5rem; flex-wrap: wrap;">
+                <button type="button" class="btn btn-primary" onclick="saveLaneProductChanges('${productId}')">
+                    💾 שמור שינויים
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="goToProductManagement('${productId}')">
+                    📝 ניהול מוצר מלא
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                    ביטול
+                </button>
+            </div>
+        </div>
+    `;
+
+    openModal(`ניהול מיקום: ${product.name}`, content);
+}
+
+/**
+ * שמירת שינויי מיקום מוצר
+ */
+function saveLaneProductChanges(productId) {
+    const newBelt = parseInt(document.getElementById('newBeltSelect').value);
+    const newPosition = parseInt(document.getElementById('newPositionInput').value) || 1;
+
+    if (!newBelt) {
+        alert('אנא בחר ליין');
+        return;
+    }
+
+    DataManager.updateProduct(String(productId), {
+        belt: newBelt,
+        position: newPosition
+    });
+
+    closeModal();
+    refreshVisualMap();
+    refreshProductsTable();
+
+    // הודעת הצלחה קצרה
+    console.log(`✅ מוצר הועבר לליין ${newBelt}, מיקום ${newPosition}`);
+}
+
+/**
+ * מעבר לניהול מוצר מלא
+ */
+function goToProductManagement(productId) {
+    closeModal();
+    showScreen('products-management');
+    // פתיחת המודל של עריכת מוצר
+    setTimeout(() => {
+        openProductModal(productId);
+    }, 100);
+}
+
+window.openLaneProductMenu = openLaneProductMenu;
+window.saveLaneProductChanges = saveLaneProductChanges;
+window.goToProductManagement = goToProductManagement;
 
 
 

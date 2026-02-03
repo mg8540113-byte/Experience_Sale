@@ -167,21 +167,15 @@
                 </div>
 
                 <div class="hub-tile" data-panel="visual-map">
-                    <div class="tile-icon">🗺️</div>
-                    <h3>מפה ויזואלית</h3>
-                    <p>תצוגת המחסן והליינים</p>
+                    <div class="tile-icon">🏗️</div>
+                    <h3>ניהול ליינים</h3>
+                    <p>מיקום מוצרים בליינים</p>
                 </div>
 
                 <div class="hub-tile" data-panel="orders-management">
                     <div class="tile-icon">📝</div>
                     <h3>ניהול הזמנות</h3>
                     <p>עריכה ומחיקה של הזמנות</p>
-                </div>
-
-                <div class="hub-tile" data-panel="belts-management">
-                    <div class="tile-icon">🏭</div>
-                    <h3>ניהול ליינים</h3>
-                    <p>הוספה, עריכה ומחיקה של ליינים</p>
                 </div>
 
                 <div class="hub-tile" onclick="window.generatePassoverData()"
@@ -265,11 +259,11 @@
             </div>
         </main>
 
-        <!-- ========== מפה ויזואלית ========== -->
+        <!-- ========== ניהול ליינים ========== -->
         <main class="screen hidden" id="visual-map">
             <div class="screen-header">
                 <button class="btn btn-secondary" onclick="showScreen('management-hub')">← חזרה לניהול</button>
-                <h1>מפה ויזואלית - מבנה המחסן</h1>
+                <h1>ניהול ליינים - מיקום מוצרים</h1>
             </div>
 
             <div class="warehouse-map" id="warehouseMap">
@@ -302,30 +296,6 @@
             </div>
         </main>
 
-        <!-- ========== פאנל ניהול ליינים ========== -->
-        <main class="screen hidden" id="belts-management">
-            <div class="screen-header">
-                <button class="btn btn-secondary" onclick="showScreen('management-hub')">← חזרה לניהול</button>
-                <h1>ניהול ליינים</h1>
-                <button class="btn btn-primary" id="addBeltBtn">+ הוסף ליין</button>
-            </div>
-
-            <div class="table-container">
-                <table class="data-table" id="beltsTable">
-                    <thead>
-                        <tr>
-                            <th>מספר ליין</th>
-                            <th>שם</th>
-                            <th>מוצרים</th>
-                            <th>פעולות</th>
-                        </tr>
-                    </thead>
-                    <tbody id="beltsTableBody">
-                    </tbody>
-                </table>
-            </div>
-        </main>
-
         <!-- ========== מודל/פופאפ כללי ========== -->
         <div class="modal-overlay hidden" id="modalOverlay">
             <div class="modal" id="modal">
@@ -350,7 +320,7 @@
     <script src="supabase.js?v=17"></script>
     <script src="packing-algorithm.js?v=12"></script>
     <script src="mock_data.js?v=13"></script>
-    <script src="app.js?v=14"></script>
+    <script src="app.js?v=15"></script>
 </body>
 
 </html>
