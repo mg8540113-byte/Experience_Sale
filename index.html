@@ -178,6 +178,13 @@
                     <p>עריכה ומחיקה של הזמנות</p>
                 </div>
 
+                <div class="hub-tile" onclick="showScreen('user-manual')"
+                    style="border: 2px solid #4CAF50; background: #e8f5e9; cursor: pointer;">
+                    <div class="tile-icon">📚</div>
+                    <h3>הסבר וניווט באתר</h3>
+                    <p>מדריך מלא למשתמש - איך להשתמש במערכת</p>
+                </div>
+
                 <div class="hub-tile" onclick="window.generatePassoverData()"
                     style="border: 2px dashed #4CAF50; background: #e8f5e9;">
                     <div class="tile-icon">🥖</div>
@@ -293,6 +300,69 @@
                     <tbody id="ordersManagementTableBody">
                     </tbody>
                 </table>
+            </div>
+        </main>
+
+        <!-- ========== מדריך למשתמש ========== -->
+        <main class="screen hidden" id="user-manual">
+            <div class="screen-header">
+                <button class="btn btn-secondary" onclick="showScreen('management-hub')">← חזרה לניהול</button>
+                <h1>מדריך למשתמש</h1>
+            </div>
+
+            <div class="manual-container"
+                style="max-width: 900px; margin: 0 auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+
+                <h2 style="color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px;">1. מסך הבית (Dashboard)
+                </h2>
+                <ul style="list-style-type: none; padding: 0;">
+                    <li style="margin-bottom: 15px;">
+                        <strong>🟦 הוסף הזמנה חדשה (כפתור כחול גדול)</strong><br>
+                        כניסה למסך יצירת הזמנה חדשה וחישוב קרטונים.
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>📦 ניהול מוצרים</strong><br>
+                        צפייה בכל המוצרים, הוספה ידנית, עריכת פרטים (מק"ט, נפח, ליין).
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>📏 סוגי קרטונים</strong><br>
+                        הגדרת גדלי הקרטונים הקיימים במלאי (S, M, XL וכו').
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>🏗️ ניהול ליינים</strong><br>
+                        תצוגה ויזואלית של המחסן וסידור מוצרים בליינים.
+                    </li>
+                    <li style="margin-bottom: 15px;">
+                        <strong>📝 ניהול הזמנות</strong><br>
+                        היסטוריית הזמנות, הדפסה חוזרת ומחיקה. חישוב מחדש של כל ההזמנות.
+                    </li>
+                </ul>
+
+                <h2 style="color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px;">2.
+                    יצירת הזמנה</h2>
+                <p>מדביקים נתונים מאקסל בתיבה הגדולה ולוחצים על <strong>"נתח הזמנה וחשב קרטונים"</strong>.</p>
+
+                <h2 style="color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px;">3.
+                    הדפסה 🖨️</h2>
+                <p>לוחצים על סמל המדפסת במסך התוצאות. המערכת תדפיס בפורמט נקי (שחור-לבן).<br>
+                    אם קרטון מכיל מעל <strong>11 פריטים</strong>, הוא יפוצל אוטומטית למספר עמודים עם הודעת אזהרה "עמוד X
+                    מתוך Y".</p>
+
+                <h2 style="color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px;">4.
+                    ניהול מלאי וסנכרון</h2>
+                <ul>
+                    <li><strong>במפה הויזואלית:</strong> לחיצה על קוביית מוצר פותחת תפריט להעברה מהירה לליין אחר או
+                        שינוי מיקום.</li>
+                    <li><strong>סנכרון אוטומטי:</strong> כל שינוי במוצר (בטבלה או במפה) מתעדכן מיד בכל המערכת ללא צורך
+                        ברענון.</li>
+                </ul>
+
+                <div
+                    style="background: #e8f5e9; border: 1px solid #4CAF50; padding: 15px; border-radius: 5px; margin-top: 30px;">
+                    <strong>🔄 חישוב קרטונים מחדש:</strong><br>
+                    כפתור במסך "ניהול הזמנות". השתמש בו רק אם שינית את מידות הקרטונים (במסך סוגי קרטונים) ואתה רוצה
+                    לעדכן את כל ההזמנות הישנות לגדלים החדשים.
+                </div>
             </div>
         </main>
 
